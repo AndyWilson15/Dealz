@@ -26,3 +26,5 @@ sherlock has entered the room
  ping
 
  pong
+
+ ping
