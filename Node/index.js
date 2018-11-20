@@ -27,12 +27,24 @@ var app = express();
 
 // use middlewares
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(allowCrossDomain);
 
 app.post('/message', function(req, res) {
     connection.query({
         sql : 'INSERT INTO messages(timestamp, sender, recipient, message) VALUES(NOW(), ?, ?, ?)',
         values : [ req.body.message_id, req.body.sender, req.body.recipient, req.body.message ]
+    }, function(error, results) {
+        if(error) throw error;
+        res.status(201).send(results);
+    });
+});
+
+app.post('/user', function(req, res) {
+    console.log(req.body);
+    connection.query({
+        sql : 'INSERT IGNORE INTO users(user_id, fullName, givenName, familyName, email, imageUrl) VALUES(?, ?, ?, ?, ?, ?)',
+        values : [ req.body.userId, req.body.fullName, req.body.givenName, req.body.familyName, req.body.email, req.body.imageUrl ]
     }, function(error, results) {
         if(error) throw error;
         res.status(201).send(results);
@@ -61,3 +73,5 @@ function allowCrossDomain(req, res, next) {
         next();
     }
 }
+
+
